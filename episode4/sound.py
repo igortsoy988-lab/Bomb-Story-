@@ -29,7 +29,7 @@ bed = 0.55*drone/np.abs(drone).max() + 0.6*wind
 s15 = T['lines'][17]['s']
 rise = np.clip((t - s15) / 8, 0, 1)
 bed += 0.12*rise*np.sin(2*np.pi*220*t)*(0.5+0.5*np.sin(2*np.pi*3*t))
-fade = np.minimum(1, t/1.5) * np.minimum(1, (dur - t)/1.5)
+fade = np.minimum(1, t/1.5) * np.minimum(1, (dur - t)/0.5)
 bed *= fade; bed /= np.abs(bed).max()
 
 # ---- эффекты ----
@@ -113,6 +113,10 @@ add(boom()*.4, L[17]['s'], .4)
 add(step(), wt(18, 'честь') - .2, .7); add(click(), wt(18, 'честь'), .5)
 for k in [L[20]['s'] + .6 + .45*i for i in range(4)]: add(click(), k, .7)
 add(heart(), L[20]['e'] + .3, .8)
+te = L[20]['e'] + 1.0                                   # заставка «Серия 5 — скоро»
+add(boom(), te, 1.0); add(gust(2.5)*.5, te, .5)
+n = int((T['end'] - te)*SR); tt = np.arange(n)/SR
+add((np.sin(2*np.pi*55*tt) + .5*np.sin(2*np.pi*82.4*tt))*np.minimum(1, tt/.3)*.5, te, .8)
 sfx /= max(1e-9, np.abs(sfx).max())
 
 def save(fn, x):
